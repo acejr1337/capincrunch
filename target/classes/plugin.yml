@@ -1,0 +1,4 @@
+name: CapinCrunch
+version: 0.0.1-SNAPSHOT
+author: [Calvin]
+main: dev.ace.capincrunch.Core
