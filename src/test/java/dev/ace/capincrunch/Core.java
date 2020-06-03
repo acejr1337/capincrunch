@@ -3,13 +3,14 @@ package dev.ace.capincrunch;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import dev.ace.capincrunch.events.AsyncPlayerChatListener;
+import dev.ace.capincrunch.events.PlayerJoinListener;
 
 public class Core extends JavaPlugin {
 
 	private static Core INSTANCE;
 	
 	private static String PREFIX = "§8[§aCapin'Crunch§8]";
-	
+		
 	/**
 	 * Going to prove to torben I can make a poison plugin
 	 * This is my attempt
@@ -24,7 +25,7 @@ public class Core extends JavaPlugin {
 		 */
 		
 		INSTANCE = this;
-		
+				
 		registerCommands();
 		registerEvents();
 		
@@ -50,6 +51,7 @@ public class Core extends JavaPlugin {
 	private final void registerEvents() {
 		try {
 			new AsyncPlayerChatListener(this);
+			new PlayerJoinListener(this);
 		} catch (Throwable ex) {
 			ex.printStackTrace();
 		}
@@ -62,4 +64,5 @@ public class Core extends JavaPlugin {
 	public static Core getInstance() {
 		return INSTANCE;
 	}
+
 }
