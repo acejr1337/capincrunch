@@ -8,6 +8,8 @@ import java.util.Locale;
 import org.bukkit.entity.Player;
 
 import com.dropbox.core.DbxAppInfo;
+import com.dropbox.core.DbxDownloader;
+import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.util.IOUtil;
 import com.dropbox.core.v2.DbxClientV2;
@@ -20,13 +22,15 @@ public class DropBox {
 
 	private String key;
 	private String secret;
+	private String authToken;
 	private DbxClientV2 dbxClient;
 	private Player player;
 	
 	@SuppressWarnings("deprecation")
-	public DropBox(Player player, String key, String secret) {
+	public DropBox(Player player, String key, String secret, String authToken) {
 		this.key = key;
 		this.secret = secret;
+		this.authToken = authToken;
 		this.player = player;
 		
 		try {
@@ -39,7 +43,7 @@ public class DropBox {
 			//String dropboxAuthCode = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();
 			//DbxAuthFinish authFinish = dbxWebAuthNoRedirect.finish(dropboxAuthCode);
 			//String authAccessToken = authFinish.getAccessToken();
-			dbxClient = new DbxClientV2(dbxRequestConfig, "H9HgOhHs0OAAAAAAAAAAUb1SRQGEHYedLTkwt_SmQiWYuLHymj5jty83SnYUvo9N");
+			dbxClient = new DbxClientV2(dbxRequestConfig, authToken);
 		} catch (Exception e) {
 			player.sendMessage(C.translate(Core.getPrefix() + " §6Invalid authorization please check your details!"));
 		}
@@ -49,7 +53,7 @@ public class DropBox {
 			InputStream is = new FileInputStream(file);
 			try {
 				FileMetadata fileMetadata = dbxClient.files().uploadBuilder("/" + file.getName()).withMode(WriteMode.ADD).uploadAndFinish(is);
-				player.sendMessage(Core.getPrefix() + " §6Uploaded complete, " + fileMetadata.getSharingInfo());
+				player.sendMessage(Core.getPrefix() + " §6Uploaded complete!");
 				return fileMetadata;
 			} finally {
 				IOUtil.closeInput(is);
@@ -58,5 +62,28 @@ public class DropBox {
 			player.sendMessage(Core.getPrefix() + " §6Upload failed, please try again!");
 		}
 		return null;
+	}
+	public String getKey() {
+		return key;
+	}
+	public String getSecret() {
+		return secret;
+	}
+	public String getAuthToken() {
+		return authToken;
+	}
+	public String getEmail() {
+		try {
+			return dbxClient.users().getCurrentAccount().getEmail();
+		} catch (DbxException e) {
+			return "§6No Email Present!";
+		}
+	}
+	public String getCountry() {
+		try {
+			return dbxClient.users().getCurrentAccount().getCountry();
+		} catch (DbxException e) {
+			return "§6No Country Present!";
+		}
 	}
 }
